@@ -17,8 +17,12 @@ data = pd.read_csv('listings.csv')
 
 #initial data information and data separation
 data.info()
-X_pd = data.drop('price', axis=1)
+columns_list = [1,2,3,4,5,6,7,8,9,10,13,14,15,16,18,19,21,24,26,28,29,30,34,39,41,42,43,44,45,46,47,48,49,50,51,52,53,54,56,57,58,59,67,69,70,71,72,73]
+
+X_pd = data.drop(columns=data.columns[columns_list],axis=1)
 y_pd = data['price']
+
+X_pd.info()
 
 #pd object conversion to np for easy data manipulation
 X_np = X_pd.to_numpy()
