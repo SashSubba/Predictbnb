@@ -28,6 +28,11 @@ X_pd.info()
 X_np = X_pd.to_numpy()
 y_np = y_pd.to_numpy()
 
+for i in range(len(X_np)):
+    verification_count = len(X_np[i][6].strip('[,]').split(','))
+    amenities_count = len(X_np[i][15].strip('[,]').split(','))
+    X_np[i][6] = verification_count
+    X_np[i][15] = amenities_count
 #%%
 
 X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X_np, y_np, test_size=0.30, random_state=0)
