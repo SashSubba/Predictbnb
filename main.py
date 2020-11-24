@@ -31,3 +31,63 @@ y_np = y_pd.to_numpy()
 #%%
 
 X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X_np, y_np, test_size=0.30, random_state=0)
+
+
+
+# %% preprocess values of bathrooms_text column with their number values
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace( np.nan, 0)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace( "0", 0, regex=True)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace("^16", 16, regex=True)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace("^1\s", 1, regex=True)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace("2", 2, regex=True)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace("2.5", 2.5, regex=True)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace("3", 2.5, regex=True)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace("3.5", 3.5, regex=True)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace("4", 4, regex=True)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace("5", 5, regex=True)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace("5.5", 5, regex=True)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace("6", 6, regex=True)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace("6.5", 6.5, regex=True)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace("8", 8, regex=True)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace("^Half", 0.5, regex=True)
+X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace("half", 0.5, regex=True)
+
+
+# %% one hot enocde the property_type
+encoded_property_types = pd.get_dummies(X_pd["property_type"])
+
+X_pd = X_pd.drop("property_type",axis=1)
+X_pd = X_pd.join(encoded_property_types)
+# %% Convert lists in host_Verifications to their lengths
+import ast
+
+def convert_list_to_lengths(x):
+    try:   
+        return len(ast.literal_eval(x))
+    except:
+        return 0
+
+X_pd["host_verifications"] = X_pd["host_verifications"].apply(convert_list_to_lengths)
+
+# %% convert host_is_superhost booleans to 1 or 0
+
+X_pd["host_is_superhost"] = X_pd["host_is_superhost"].apply(lambda x : 1 if x == 't' else 0)
+
+#%% hot encode host_neighbourhood
+encoded_host_neighbourhood = pd.get_dummies(X_pd["host_neighbourhood"])
+
+X_pd = X_pd.drop("host_neighbourhood",axis=1)
+X_pd = X_pd.join(encoded_host_neighbourhood)
+
+# %% convert host_identity_verfied booleans
+
+X_pd["host_identity_verified"] = X_pd["host_identity_verified"].apply(lambda x : 1 if x == 't' else 0)
+
+# %% convert instant_bookable_booleans
+X_pd["instant_bookable"] = X_pd["instant_bookable"].apply(lambda x : 1 if x == 't' else 0)
+
+
+#%%
+X_pd.info()
+
+
