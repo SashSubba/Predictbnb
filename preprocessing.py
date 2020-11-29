@@ -37,20 +37,6 @@ X_pd['host_since'] = X_pd['host_since'].apply(convert_date_to_year)
 
 X_pd.info()
 
-
-#pd object conversion to np for easy data manipulation
-X_np = X_pd.to_numpy()
-y_np = y_pd.to_numpy()
-
-for i in range(len(X_np[0])):
-    print(X_np[0][i])
-
-#%%
-
-X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X_np, y_np, test_size=0.30, random_state=0)
-
-
-
 # %% preprocess values of bathrooms_text column with their number values
 X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace( np.nan, 0)
 X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace( "0", 0, regex=True)
@@ -75,6 +61,7 @@ encoded_property_types = pd.get_dummies(X_pd["property_type"])
 
 X_pd = X_pd.drop("property_type",axis=1)
 X_pd = X_pd.join(encoded_property_types)
+
 # %% Convert lists in host_Verifications to their lengths
 import ast
 
@@ -85,6 +72,7 @@ def convert_list_to_lengths(x):
         return 0
 
 X_pd["host_verifications"] = X_pd["host_verifications"].apply(convert_list_to_lengths)
+X_pd["amenities"] = X_pd["amenities"].apply(convert_list_to_lengths)
 
 # %% convert host_is_superhost booleans to 1 or 0
 
@@ -105,6 +93,11 @@ X_pd["instant_bookable"] = X_pd["instant_bookable"].apply(lambda x : 1 if x == '
 
 
 #%%
-X_pd.info()
 
+X_np = X_pd.to_numpy()
+y_np = y_pd.to_numpy()
 
+for i in range(len(X_np[0])):
+    print(X_np[0][i])
+#%%
+X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X_np, y_np, test_size=0.30, random_state=0)
