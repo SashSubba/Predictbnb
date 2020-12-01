@@ -85,8 +85,3 @@ X_pd["host_identity_verified"] = X_pd["host_identity_verified"].apply(lambda x :
 
 #convert instant_bookable_booleans
 X_pd["instant_bookable"] = X_pd["instant_bookable"].apply(lambda x : 1 if x == 't' else 0)
-
-X_np = X_pd.to_numpy()
-y_np = y_pd.to_numpy()
-    
-X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X_np, y_np, test_size=0.30, random_state=0)
