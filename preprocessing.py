@@ -19,7 +19,6 @@ def convert_date_to_year(x):
 data = pd.read_csv('listings.csv')
 
 #initial data information and data separation
-data.info()
 columns_list = [0,1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,18,19,21,24,26,28,29,30,32,34,41,42,43,44,45,46,47,48,49,50,51,52,53,54,56,57,58,59,67,69,70,71,72,73]
 data = data.drop(columns=data.columns[columns_list],axis=1)
 data = data.dropna()
@@ -32,8 +31,6 @@ X_pd = X_pd.drop('neighbourhood_cleansed',axis=1)
 X_pd = X_pd.join(encoded_neighbourhood)
 
 X_pd['host_since'] = X_pd['host_since'].apply(convert_date_to_year)
-
-X_pd.info()
 
 #preprocess values of bathrooms_text column with their number values
 X_pd['bathrooms_text'] = X_pd['bathrooms_text'].replace( np.nan, 0)
@@ -86,7 +83,4 @@ X_pd["host_identity_verified"] = X_pd["host_identity_verified"].apply(lambda x :
 #convert instant_bookable_booleans
 X_pd["instant_bookable"] = X_pd["instant_bookable"].apply(lambda x : 1 if x == 't' else 0)
 
-X_np = X_pd.to_numpy()
-y_np = y_pd.to_numpy()
-    
-X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X_np, y_np, test_size=0.30, random_state=0)
+X_pd.info(10)
