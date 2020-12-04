@@ -1,13 +1,7 @@
 from ast import literal_eval
 import csv
-import gzip
-import json
-import matplotlib as plt
 import numpy as np
 import pandas as pd
-import sklearn
-import sklearn.model_selection
-import torch
 
 def convert_date_to_year(x):
     try:
