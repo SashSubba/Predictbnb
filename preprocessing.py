@@ -1,13 +1,22 @@
 from ast import literal_eval
+import ast
 import csv
 import numpy as np
 import pandas as pd
 
+#Convert date data to only have the year
 def convert_date_to_year(x):
     try:
         return float(x[:4])
     except:
         return None
+
+#Convert lists in host_Verifications to their lengths
+def convert_list_to_lengths(x):
+    try:   
+        return len(ast.literal_eval(x))
+    except:
+        return 0
 
 #load total listings from csv file onto pd object and drop rows with missing values
 data = pd.read_csv('listings.csv')
@@ -49,15 +58,6 @@ encoded_property_types = pd.get_dummies(X_pd["property_type"])
 
 X_pd = X_pd.drop("property_type",axis=1)
 X_pd = X_pd.join(encoded_property_types)
-
-#Convert lists in host_Verifications to their lengths
-import ast
-
-def convert_list_to_lengths(x):
-    try:   
-        return len(ast.literal_eval(x))
-    except:
-        return 0
 
 X_pd["host_verifications"] = X_pd["host_verifications"].apply(convert_list_to_lengths)
 X_pd["amenities"] = X_pd["amenities"].apply(convert_list_to_lengths)

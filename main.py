@@ -25,21 +25,25 @@ y_np = y.to_numpy()
     
 X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X_np, y_np, test_size=0.30, random_state=0)
 
-#%% Feature Selection
+#%%
+#Scaling and Normalization of data
+scaler = sklearn.preprocessing.StandardScaler().fit(X_train)
+X_scaled_train = scaler.transform(X_train)
+X_scaled_test = scaler.transform(X_test)
+
+#%%
+# Run Feature Selection
 fs = SelectKBest(score_func=mutual_info_regression, k=50)
-fs.fit(X_train, y_train)
-X_train_fs = fs.transform(X_train)
+fs.fit(X_scaled_train, y_train)
+X_train_fs = fs.transform(X_scaled_train)
 X_test_fs = fs.transform(X_test)
 
 for i in range(len(fs.scores_)):
 	print('Feature %d: %f' % (i, fs.scores_[i]))
 
 #%%
-linear_model = sklearn.linear_model.LinearRegression(fit_intercept=False)
+linear_model = sklearn.linear_model.LinearRegression()
 print("training accuracy: " + str(linear_model.fit(X_train_fs,y_train).score(X_train_fs,y_train)*100) + "%")
-scaler = sklearn.preprocessing.StandardScaler().fit(X_train)
-X_scaled_train = scaler.transform(X_train)
-X_scaled_test = scaler.transform(X_test)
 
 #%% Ensembling
 for n_estimator in [1,2,3,4,5,6,7,8,9,10,20,50,100]:
