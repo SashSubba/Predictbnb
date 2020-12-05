@@ -15,7 +15,9 @@ import sklearn.ensemble
 from sklearn.model_selection import cross_val_score, cross_val_predict
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import StandardScaler
-
+import scipy
+import scipy.stats   
+import sklearn.metrics
 #%%
 X = prep.X_pd
 y = prep.y_pd.astype('string').apply(lambda x: x.str.strip('$')).apply(lambda x: x.str.replace(',', '')).astype('float')
@@ -33,10 +35,10 @@ X_scaled_test = scaler.transform(X_test)
 
 #%%
 # Run Feature Selection
-fs = SelectKBest(score_func=mutual_info_regression, k=50)
+fs = SelectKBest(score_func=mutual_info_regression, k="all")
 fs.fit(X_scaled_train, y_train)
 X_train_fs = fs.transform(X_scaled_train)
-X_test_fs = fs.transform(X_test)
+X_test_fs = fs.transform(X_scaled_test)
 
 for i in range(len(fs.scores_)):
 	print('Feature %d: %f' % (i, fs.scores_[i]))
@@ -46,11 +48,17 @@ linear_model = sklearn.linear_model.LinearRegression()
 print("training accuracy: " + str(linear_model.fit(X_train_fs,y_train).score(X_train_fs,y_train)*100) + "%")
 
 #%% Ensembling
-for n_estimator in [1,2,3,4,5,6,7,8,9,10,20,50,100]:
-    random_forest_regressor = sklearn.ensemble.RandomForestRegressor(n_estimators=n_estimator, random_state=0, max_depth=10)
-    random_forest_regressor.fit(X_scaled_train, y_train)
-    # predictions = random_forest_regressor.predict(X_test)
-    scores = cross_val_score(random_forest_regressor, X_scaled_train, y_train, cv=10 )
-    # predictions = cross_val_predict(random_forest_regressor, X_test, y_test)
-    accuracy_score = random_forest_regressor.score(X_scaled_test, y_test)
-    print("CV score:" , str(scores.mean()*100), "prediction accuracy_score", str(accuracy_score*100))
+
+rfr = sklearn.ensemble.RandomForestRegressor( random_state=0)
+param_distribution = {'bootstrap': [True, False], 'n_estimators': [50,100,200,300,1000], 'max_features': ['auto','sqrt'], 'max_depth':[10,20,30,40,50,100]}
+randomized_search_rfr = sklearn.model_selection.RandomizedSearchCV(rfr, param_distribution, n_iter=22, verbose=2, cv=5, random_state=0)
+randomized_search_rfr.fit(X_train_fs, y_train)
+# print("training accuracy: " + str(rfr.fit(X_train_fs,y_train).score(X_test_fs, y_test)*100) + "%")
+# %%
+
+best_esimtator = randomized_search_rfr.best_estimator_
+random_search_train_accuracy =  best_esimtator.score(X_test_fs, y_test)*100
+
+print(random_search_train_accuracy)
+# 8.834% which took about 22 minutes
+# %%
