@@ -27,9 +27,14 @@ columns_list = [0,1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,18,19,20,21,23,24,26,28,31
 data = data.drop(columns=data.columns[columns_list],axis=1)
 data = data.dropna()
 
-X_pd = data.drop('price',axis=1)
-y_pd = data[['price']].astype('string')
-y_pd = y_pd.apply(lambda x: x.str.strip('$')).apply(lambda x: x.str.replace(',', ''))
+data.price = data[['price']].astype('string')
+data.price = data[['price']].apply(lambda x: x.str.strip('$')).apply(lambda x: x.str.replace(',', ''))
+data.price = data[['price']].astype('float')
+
+filtered_data = data[data['price'] <= 600]
+
+X_pd = filtered_data.drop('price',axis=1)
+y_pd = filtered_data[['price']]
 
 
 
