@@ -62,8 +62,10 @@ print('Testing Mean Squared Error for Linear Regression: %.2f' % mean_squared_er
 print('Testing R-Squared Score for Linear Regression: %.3f' % linear_model2.score(X_test_fs,y_test))
 
 plt.scatter(y_test, lin_preds2,  color='black')
-#plt.plot(preds, preds, color='blue', linewidth=3)
-plt.title("Price predictions for LinearRegression model");
+plt.plot(lin_preds2, lin_preds2, color='blue', linewidth=3)
+plt.title('Price predictions vs Actual Price')
+plt.xlabel('Actual Price')
+plt.ylabel('Predicted Price')
 plt.show()
 
 #%%
@@ -82,6 +84,11 @@ svr_preds2 = svr_model2.predict(X_test_fs)
 
 print('Testing Mean Squared Error for Support Vector Regression: %.2f' % mean_squared_error(y_test, svr_preds2))
 print('Testing R-Squared Score for Support Vector Regression: %.3f' % svr_model2.score(X_test_fs,y_test))
+
+plt.scatter(y_test, lin_preds2,  color='black')
+#plt.plot(preds, preds, color='blue', linewidth=3)
+plt.title("Price predictions for LinearRegression model");
+plt.show()
 
 #%% 
 #Ensembling
