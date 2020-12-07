@@ -31,7 +31,7 @@ data.price = data[['price']].astype('string')
 data.price = data[['price']].apply(lambda x: x.str.strip('$')).apply(lambda x: x.str.replace(',', ''))
 data.price = data[['price']].astype('float')
 
-filtered_data = data[data['price'] <= 600] 
+filtered_data = data[data['price'] <= 600]
 
 X_pd = filtered_data.drop('price',axis=1)
 y_pd = filtered_data[['price']]

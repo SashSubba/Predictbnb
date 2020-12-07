@@ -1,26 +1,26 @@
 #%%
 import preprocessing as prep
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import sklearn
+import sklearn.ensemble
 import sklearn.linear_model
 import sklearn.model_selection
-import torch
-from sklearn.metrics import mean_absolute_error
-from sklearn.feature_selection import SelectKBest
-from sklearn.feature_selection import mutual_info_regression
-
-import sklearn.ensemble
-from sklearn.model_selection import cross_val_score, cross_val_predict
-from sklearn.metrics import accuracy_score
-from sklearn.preprocessing import StandardScaler
-import scipy
-import scipy.stats   
 import sklearn.metrics
-
 import sklearn.neural_network
+import sklearn.svm
+import scipy
+import scipy.stats
+import torch
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score, cross_val_predict
+from sklearn.metrics import mean_squared_error
+from sklearn.feature_selection import mutual_info_regression
+from sklearn.feature_selection import SelectKBest
+from sklearn.preprocessing import StandardScaler
 #%%
+#Preprocessed data retrieval
 X = prep.X_pd
 y = prep.y_pd
 
@@ -36,20 +36,56 @@ X_scaled_train = scaler.transform(X_train)
 X_scaled_test = scaler.transform(X_test)
 
 #%%
-# Run Feature Selection
+#Run Feature Selection
 fs = SelectKBest(score_func=mutual_info_regression, k="all")
-fs.fit(X_scaled_train, y_train)
-X_train_fs = fs.transform(X_scaled_train)
-X_test_fs = fs.transform(X_scaled_test)
+fs.fit(X_train, y_train)
+X_train_fs = fs.transform(X_train)
+X_test_fs = fs.transform(X_test)
 
 for i in range(len(fs.scores_)):
 	print('Feature %d: %f' % (i, fs.scores_[i]))
 
 #%%
+#Linear Regression Model
 linear_model = sklearn.linear_model.LinearRegression()
-print("training accuracy: " + str(linear_model.fit(X_train_fs,y_train).score(X_train_fs,y_train)*100) + "%")
+linear_model.fit(X_train_fs,y_train)
+lin_preds = linear_model.predict(X_train_fs)
 
-#%% RandomizedSearch with RandomForestRegressor . Note : Training takes about 7.5 mins. Please see comments after print statements for the results
+print('Training Mean Squared Error for Linear Regression: %.2f' % mean_squared_error(y_train, lin_preds))
+print('Training R-Squared Score for Linear Regression: %.3f' % linear_model.score(X_train_fs,y_train))
+
+linear_model2 = sklearn.linear_model.LinearRegression()
+linear_model2.fit(X_train_fs,y_train)
+lin_preds2 = linear_model2.predict(X_test_fs)
+
+print('Testing Mean Squared Error for Linear Regression: %.2f' % mean_squared_error(y_test, lin_preds2))
+print('Testing R-Squared Score for Linear Regression: %.3f' % linear_model2.score(X_test_fs,y_test))
+
+plt.scatter(y_test, lin_preds2,  color='black')
+plt.plot(lin_preds2, lin_preds2, color='blue', linewidth=3)
+plt.title('Price predictions vs Actual Price')
+plt.xlabel('Actual Price')
+plt.ylabel('Predicted Price')
+plt.show()
+
+#%%
+#Support Vector Regression Model
+svr_model = sklearn.svm.LinearSVR(random_state=0)
+svr_model.fit(X_train_fs, y_train)
+svr_preds = svr_model.predict(X_train_fs)
+
+print('Training Mean Squared Error for Support Vector Regression: %.2f' % mean_squared_error(y_train, svr_preds))
+print('Training R-Squared Score for Support Vector Regression: %.3f' % svr_model.score(X_train_fs,y_train))
+
+svr_model2 = sklearn.svm.LinearSVR(random_state=0)
+svr_model2.fit(X_train_fs, y_train)
+svr_preds2 = svr_model2.predict(X_test_fs)
+
+print('Testing Mean Squared Error for Support Vector Regression: %.2f' % mean_squared_error(y_test, svr_preds2))
+print('Testing R-Squared Score for Support Vector Regression: %.3f' % svr_model2.score(X_test_fs,y_test))
+
+#%% 
+#RandomizedSearch with RandomForestRegressor . Note : Training takes about 7.5 mins. Please see comments after print statements for the results
 
 rfr = sklearn.ensemble.RandomForestRegressor( random_state=0)
 param_distribution = {'n_estimators': [50,100,200,300], 'max_features': ['auto','sqrt'], 'max_depth':[10,20,30,40,50]}
@@ -57,10 +93,6 @@ randomized_search_rfr = sklearn.model_selection.RandomizedSearchCV(rfr, param_di
 randomized_search_rfr.fit(X_train_fs, y_train)
 
 best_estimator = randomized_search_rfr.best_estimator_
-
-random_search_train_accuracy =  best_estimator.score(X_train_fs, y_train)*100
-random_search_test_accuracy =  best_estimator.score(X_test_fs, y_test)*100
-
 
 y_pred_1 = best_estimator.predict(X_train_fs)
 y_pred_2 = best_estimator.predict(X_test_fs)
@@ -78,7 +110,6 @@ print("Training R-Squared Error: %.3f"  %(training_score))
 print("Testing Mean Squared Error: %.3f"  %(mse_test))
 print("Testing R-Squared Error: %.3f"  %(testing_score))
 
-
 """
 
 best estimator
@@ -89,7 +120,9 @@ Testing Mean Squared Error: 3125.089
 Testing R-Squared Error: 0.481
 
 """
-# %% RandomizedSearch with Multi-layer Perceptron regressor. Note : Training takes about 4 mins. Please see comments after print statements for the results
+
+#%% 
+#RandomizedSearch with Multi-layer Perceptron regressor. Note : Training takes about 4 mins. Please see comments after print statements for the results
 
 nn = sklearn.neural_network.MLPRegressor( random_state=0, momentum=0.9)
 param_neural_net = {'solver': ['sgd','adam'], 'hidden_layer_sizes':[(),(100,),(100,57),(57,25),(100,57,25)], 'activation':['tanh','sgd'], 'batch_size':[100,200,300], 'max_iter':[10,50,100,200,500],'learning_rate_init':[0.001, 0.01, 0.1]}
