@@ -11,7 +11,7 @@ The investigated models are :
   <li>Linear Regression</li>
   <li>Support Vector Regression</li>
   <li>Random Forest Regression</li>
-  <li>Neural Netwrok</li>
+  <li>Neural Network</li>
 </ul>
 </p>
 
