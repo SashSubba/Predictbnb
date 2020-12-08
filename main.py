@@ -14,7 +14,6 @@ from sklearn.model_selection import cross_val_score, cross_val_predict
 from sklearn.metrics import mean_squared_error
 from sklearn.feature_selection import mutual_info_regression
 from sklearn.feature_selection import SelectKBest
-from sklearn.preprocessing import StandardScaler
 
 #Preprocessed data retrieval
 X = prep.X_pd
