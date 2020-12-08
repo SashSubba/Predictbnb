@@ -58,6 +58,17 @@ depending on how you set up your path variable name for python3.
 <p>
 For preprocessing and training the models, we relied on the following documentations for each Model:
   
+Linear Regression
+<ul>
+  <li>https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html#sklearn.ensemble.RandomForestRegressor</li>
+  <li>https://scikit-learn.org/stable/auto_examples/linear_model/plot_ols.html</li>
+</ul>
+
+Support Vector Regression
+<ul>
+  <li>https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html#sklearn.svm.SVR</li>
+  <li>https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVR.html#sklearn.svm.LinearSVR</li>
+</ul>
 
 Random Forest Regression
 <ul>
