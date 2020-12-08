@@ -51,3 +51,26 @@ depending on how you set up your path variable name for python3.
   
 </p>
 <p></p>
+
+
+<h2>Sources</h2>
+
+<p>
+For preprocessing and training the models, we relied on the following documentations for each Model:
+  
+
+Random Forest Regression
+<ul>
+  <li>https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html#sklearn.ensemble.RandomForestRegressor</li>
+  <li>https://scikit-learn.org/stable/modules/ensemble.html</li>
+  <li>https://scikit-learn.org/stable/modules/ensemble.html#random-forest-parameters</li>
+  <li>https://medium.com/datadriveninvestor/random-forest-regression-9871bc9a25eb</li>
+</ul>
+
+Neural Networks
+<ul>
+<li>https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html</li>
+</ul>
+
+
+</p>
