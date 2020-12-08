@@ -1,4 +1,3 @@
-#%%
 import preprocessing as prep
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,9 +9,6 @@ import sklearn.model_selection
 import sklearn.metrics
 import sklearn.neural_network
 import sklearn.svm
-import scipy
-import scipy.stats
-import torch
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score, cross_val_predict
 from sklearn.metrics import mean_squared_error
@@ -20,7 +16,6 @@ from sklearn.feature_selection import mutual_info_regression
 from sklearn.feature_selection import SelectKBest
 from sklearn.preprocessing import StandardScaler
 
-#%%
 #Preprocessed data retrieval
 X = prep.X_pd
 y = prep.y_pd
@@ -30,7 +25,6 @@ y_np = y.to_numpy()
     
 X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X_np, y_np, test_size=0.30, random_state=0)
 
-#%%
 #Run Feature Selection
 fs = SelectKBest(score_func=mutual_info_regression, k="all")
 fs.fit(X_train, y_train)
@@ -40,7 +34,6 @@ X_test_fs = fs.transform(X_test)
 for i in range(len(fs.scores_)):
 	print('Feature %d: %f' % (i, fs.scores_[i]))
 
-#%%
 #Linear Regression Model
 linear_model = sklearn.linear_model.LinearRegression()
 linear_model.fit(X_train_fs,y_train)
@@ -56,7 +49,6 @@ lin_preds2 = linear_model2.predict(X_test_fs)
 print('Testing Mean Squared Error for Linear Regression: %.2f' % mean_squared_error(y_test, lin_preds2))
 print('Testing R-Squared Score for Linear Regression: %.3f' % linear_model2.score(X_test_fs,y_test))
 
-#%%
 #Support Vector Regression Model . Note : Training takes about 2 mins. Please see comments after print statements for the results
 svr_model = sklearn.svm.LinearSVR(random_state=0)
 param_distribution = {'loss': ['epsilon_insensitive', 'squared_epsilon_insensitive'], 'dual': [True,False], 'max_iter': [100,500,1000,2000]}
@@ -92,7 +84,6 @@ Testing R-Squared Error: 0.336
 
 """
 
-#%% 
 #RandomizedSearch with RandomForestRegressor . Note : Training takes about 7.5 mins. Please see comments after print statements for the results
 rfr = sklearn.ensemble.RandomForestRegressor( random_state=0)
 param_distribution = {'n_estimators': [50,100,200,300], 'max_features': ['auto','sqrt'], 'max_depth':[10,20,30,40,50]}
@@ -128,7 +119,6 @@ Testing R-Squared Error: 0.481
 
 """
 
-#%% 
 #RandomizedSearch with Multi-layer Perceptron regressor. Note : Training takes about 4 mins. Please see comments after print statements for the results
 
 nn = sklearn.neural_network.MLPRegressor( random_state=0, momentum=0.9)
@@ -165,7 +155,6 @@ Testing R-Squared Error: 0.390
 
 """
 
-#%%
 #Plotting 
 plt.scatter(y_test, y_pred_2,  color='black')
 plt.plot(y_pred_2, y_pred_2, color='blue', linewidth=3)
